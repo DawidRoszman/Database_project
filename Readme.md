@@ -62,3 +62,5 @@ Baza danych sklepu internetowego. Sklep oferuje różne produkty takie jak ksią
 - Kilka produktów/kategorii może mieć tą samą promocję, ale produkt/kategoria nie może mieć więcej niż jednej promocji na raz
 - Każda kategoria ma przynajmniej jeden produkt
 - Produkt musi miec kategorie
+
+!['Diagram ERD'](version1.0.png)
