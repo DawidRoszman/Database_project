@@ -9,19 +9,29 @@ Baza danych sklepu internetowego. Sklep oferuje różne produkty takie jak ksią
   - imie
   - nazwisko
   - nr_telefonu
+-Adres
+  - id
+  - nr_domu
+  - ulica
+  - miejscowosc
+  - kod-pocztowy
+  - kraj
 - Produkt
   - id
   - nazwa
   - cena
-  - ilosc
   - opis
   - autor/producent
+- Stan_magazynu
+  - id
+  - ilosc
 - Kategoria
   - id
   - nazwa
 - Zamówienie
   - id
   - data_zamowienia
+  - oplacone
 - Konto Premium
   - id
   - data_rozpoczecia
@@ -29,6 +39,7 @@ Baza danych sklepu internetowego. Sklep oferuje różne produkty takie jak ksią
   - automatyczne_odnowienie
 - Promocje
   - id
+  - data_zakonczenia
   - nazwa
   - znizka_bez_premium
   - znizka_z_premium
