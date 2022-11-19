@@ -63,4 +63,6 @@ Baza danych sklepu internetowego. Sklep oferuje różne produkty takie jak ksią
 - Każda kategoria ma przynajmniej jeden produkt
 - Produkt musi miec kategorie
 
-!['Diagram ERD'](version1.0.png)
+![Diagram ERD](version1.0.png)
+
+[Lepszej jakosci zdjecie](https://github.com/DawidRoszman/Database_project/blob/master/version1.0.png)
