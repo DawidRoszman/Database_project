@@ -1,6 +1,6 @@
 # Sklep internetowy - diagram ERD
 
-Baza danych sklepu Empik. Sklep oferuje różne produkty takie jak książki, filmy i gry. Użytkownik musi posiadać konto w serwisie żeby mieć możliwość korzystania z promocji, ale nie musi posiadać konta gdy chce dokonać zakupu w sklepie stacjonarnym. Przypisanie adresu do konta nie jest wymagane, ponieważ klient może zamówić produkt do paczkomatu. Sklep oferuje różne promocje które różnią się w zależności od posiadania konta premium przez użytkownika. Sklep obsługuje różne rodzaje dostawy(tj. dostawa kurierem czy dostawa do paczkomatu) oraz różne rodzaje płatności(tj. karta płatnicza, przelew BLIK). Użytkownik może wystawiać oceny do produktów. Sklep ma możliwość wystawiania faktur.
+Baza danych sklepu Empik. Sklep oferuje różne produkty takie jak książki, filmy i gry. Użytkownik musi posiadać konto w serwisie żeby mieć możliwość korzystania z promocji, ale nie musi posiadać konta gdy chce dokonać zakupu w sklepie stacjonarnym. Przypisanie adresu do konta nie jest wymagane, ponieważ klient może zamówić produkt do paczkomatu. Sklep oferuje różne promocje które różnią się w zależności od posiadania konta premium przez użytkownika. Sklep obsługuje różne rodzaje dostawy(tj. dostawa kurierem czy dostawa do paczkomatu) oraz różne rodzaje płatności(tj. karta płatnicza, przelew BLIK). Użytkownik może wystawiać oceny do produktów. Sklep ma możliwość wystawiania faktur. Do sklepu stacjonarnego dostarczane są dostawy składające się z wielu produktów.
 
 <!-- ## Tabele
 
@@ -70,6 +70,7 @@ Baza danych sklepu Empik. Sklep oferuje różne produkty takie jak książki, fi
 - Pracownik może pracować tylko w jednym sklepie na raz, w sklepie może pracować wielu pracowników
 - Zamówienie nie musi mieć przypisanego użytkownika ani rodzaju dostawy, poniważ produkty mogły być zakupione w sklepie stacjonrnym
 - Sklep stacjonarny, ani pracownik nie muszą być przypisani do zamównienia, gdy zamówienie było robiene przez sklep internetowy
+- Każdy sklep otrzymuje różne dostawy
 
 ![Diagram ERD](version1.0.png)
 
