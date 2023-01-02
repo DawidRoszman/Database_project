@@ -1,217 +1,142 @@
+DROP DATABASE sklep;
+CREATE DATABASE sklep;
+use sklep;
+CREATE TABLE Adres (
+  id INTEGER NOT NULL IDENTITY(1,1) UNIQUE,
+  nr_domu INT NOT NULL,
+  ulica VARCHAR(30) NOT NULL,
+  miejscowosc VARCHAR(30) NOT NULL,
+  kod_pocztowy VARCHAR(10) NOT NULL,
+  kraj VARCHAR(30) NOT NULL,
+  CHECK (LEFT(kraj, 1)=UPPER(LEFT(kraj,1))),
+  PRIMARY KEY(id)
+);
+CREATE TABLE Sklep_stacjonarny (
+	id INTEGER NOT NULL IDENTITY(1,1) UNIQUE,
+	Adres_id INTEGER NOT NULL FOREIGN KEY REFERENCES Adres(id),
+	nazwa VARCHAR(30) NOT NULL
+	PRIMARY KEY(id)
+);
+CREATE TABLE Pracownik (
+	id INTEGER NOT NULL UNIQUE IDENTITY(1,1),
+	Sklep_stacjonarny_id INTEGER NULL FOREIGN KEY REFERENCES Sklep_stacjonarny(id),
+	imie VARCHAR(30) NOT NULL,
+	nazwisko VARCHAR(30) NOT NULL ,
+	data_zatrudnienia DATE NOT NULL,
+	rodzaj_umowy VARCHAR(20) NOT NULL,
+	pensja FLOAT NOT NULL,
+	dodatek FLOAT NULL,
+	stanowisko VARCHAR(30) NOT NULL,
+	PRIMARY KEY (id),
+	CHECK (pensja>1999)
+);
+CREATE TABLE Promocje (
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  data_rozpoczecia DATE NOT NULL,
+  data_zakonczenia DATE NULL,
+  nazwa VARCHAR(30) NOT NULL,
+  znizka_bez_premium FLOAT NOT NULL,
+  znizka_z_premium FLOAT NOT NULL,
+  CHECK (znizka_z_premium>znizka_bez_premium),
+  PRIMARY KEY(id)
+);
+
 CREATE TABLE Rodzaje_dostawy (
-  id INT NOT NULL AUTO_INCREMENT,
-  nazwa VARCHAR(30) NULL,
-  sredni_czas_dostawy INT NULL,
+  id INT NOT NULL IDENTITY(1,1) UNIQUE,
+  nazwa VARCHAR(30) NOT NULL,
+  sredni_czas_dostawy INT NOT NULL,
+  CHECK (sredni_czas_dostawy>-1),
   PRIMARY KEY(id)
 );
 
 CREATE TABLE Rodzaje_platnosci (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  nazwa VARCHAR(30) NULL,
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  nazwa VARCHAR(30) NOT NULL,
+  CHECK (LEFT(nazwa, 1)=UPPER(LEFT(nazwa,1))),
   PRIMARY KEY(id)
-);
-
-CREATE TABLE Adres (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  nr_budynku VARCHAR(10) NULL,
-  ulica VARCHAR(30) NULL,
-  miejscowosc VARCHAR(30) NULL,
-  kod_pocztowy VARCHAR(10) NULL,
-  kraj VARCHAR(30) NULL,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE Promocje (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  data_zakonczenia DATE NULL,
-  nazwa VARCHAR(30) NULL,
-  znizka_bez_premium FLOAT NULL,
-  znizka_z_premium FLOAT NULL,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE Uzytkownik (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Adres_id INTEGER UNSIGNED NOT NULL,
-  imie VARCHAR(30) NULL,
-  nazwisko VARCHAR(30) NULL,
-  nr_telefonu VARCHAR(30) NULL,
-  karta_platnicza VARCHAR(30) NULL,
-  PRIMARY KEY(id),
-  INDEX Uzytkownik_FKIndex1(Adres_id),
-  FOREIGN KEY(Adres_id)
-    REFERENCES Adres(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-);
-
-CREATE TABLE Sklep_stacjonarny (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Adres_id INTEGER UNSIGNED NOT NULL,
-  nazwa INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id, Adres_id),
-  INDEX Sklep_stacjonarny_FKIndex1(Adres_id),
-  FOREIGN KEY(Adres_id)
-    REFERENCES Adres(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-);
-
-CREATE TABLE Pracownik (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Sklep_stacjonarny_Adres_id INTEGER UNSIGNED NOT NULL,
-  Sklep_stacjonarny_id INTEGER UNSIGNED NOT NULL,
-  imie VARCHAR(20) NULL,
-  nazwisko VARCHAR(20) NULL,
-  data_zatrudnienia DATE NULL,
-  rodzaj_umowy VARCHAR(20) NULL,
-  pensja FLOAT NULL,
-  dodatek FLOAT NULL,
-  stanowisko INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id),
-  INDEX Pracownik_FKIndex1(Sklep_stacjonarny_id, Sklep_stacjonarny_Adres_id),
-  FOREIGN KEY(Sklep_stacjonarny_id, Sklep_stacjonarny_Adres_id)
-    REFERENCES Sklep_stacjonarny(id, Adres_id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-);
-
-CREATE TABLE Konto_Premium (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Uzytkownik_id INTEGER UNSIGNED NOT NULL,
-  data_rozpoczecia DATE NULL,
-  data_zakonczenia DATE NULL,
-  automatyczne_odnowienie BOOL NULL,
-  PRIMARY KEY(id, Uzytkownik_id),
-  INDEX Konto_Premium_FKIndex1(Uzytkownik_id),
-  FOREIGN KEY(Uzytkownik_id)
-    REFERENCES Uzytkownik(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
 );
 
 CREATE TABLE Kategoria (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Promocje_id INTEGER UNSIGNED NOT NULL,
-  nazwa INTEGER UNSIGNED NULL,
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Promocje_id INTEGER  NULL FOREIGN KEY REFERENCES Promocje(id),
+  nazwa VARCHAR(30)  NOT NULL,
+  CHECK (LEFT(nazwa, 1)=UPPER(LEFT(nazwa,1))),
   PRIMARY KEY(id),
-  INDEX Kategoria_FKIndex1(Promocje_id),
-  FOREIGN KEY(Promocje_id)
-    REFERENCES Promocje(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
 );
 
 CREATE TABLE Produkt (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Promocje_id INTEGER UNSIGNED NOT NULL,
-  Kategoria_id INTEGER UNSIGNED NOT NULL,
-  nazwa VARCHAR(30) NULL,
-  cena FLOAT NULL,
-  opis VARCHAR(30) NULL,
-  autor/producent VARCHAR(30) NULL,
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Promocje_id INTEGER  NULL FOREIGN KEY REFERENCES Promocje(id),
+  Kategoria_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Kategoria(id),
+  nazwa VARCHAR(30) NOT NULL,
+  cena FLOAT NOT NULL,
+  opis TEXT NOT NULL,
+  autor_producent VARCHAR(30) NOT NULL,
+  CHECK (cena > 0),
   PRIMARY KEY(id),
-  INDEX Produkt_FKIndex1(Kategoria_id),
-  INDEX Produkt_FKIndex2(Promocje_id),
-  FOREIGN KEY(Kategoria_id)
-    REFERENCES Kategoria(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Promocje_id)
-    REFERENCES Promocje(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
 );
 
-CREATE TABLE Ocena (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Uzytkownik_id INTEGER UNSIGNED NOT NULL,
-  Produkt_id INTEGER UNSIGNED NOT NULL,
-  ocena(1-5) INT NULL,
-  data_wystawienia DATE NULL,
-  komentarz TEXT NULL,
+CREATE TABLE Uzytkownik (
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Adres_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Adres(id),
+  imie VARCHAR(30) NOT NULL,
+  nazwisko VARCHAR(30) NOT NULL,
+  nr_telefonu VARCHAR(30) UNIQUE NOT NULL,
+  karta_platnicza VARCHAR(30) UNIQUE NOT NULL,
+  CHECK (LEN(nr_telefonu)=11),
   PRIMARY KEY(id),
-  INDEX Ocena_FKIndex1(Produkt_id),
-  INDEX Ocena_FKIndex2(Uzytkownik_id),
-  FOREIGN KEY(Produkt_id)
-    REFERENCES Produkt(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Uzytkownik_id)
-    REFERENCES Uzytkownik(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
 );
 
 CREATE TABLE Zamowienie (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Pracownik_id INTEGER UNSIGNED NOT NULL,
-  Sklep_stacjonarny_Adres_id INTEGER UNSIGNED NOT NULL,
-  Sklep_stacjonarny_id INTEGER UNSIGNED NOT NULL,
-  Uzytkownik_id INTEGER UNSIGNED NOT NULL,
-  Rodzaje_dostawy_id INT NOT NULL,
-  Rodzaje_platnosci_id INTEGER UNSIGNED NOT NULL,
-  data_zlozenia_zamowienia DATE NULL,
-  oplacone BOOL NULL,
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Uzytkownik_id INTEGER  NULL FOREIGN KEY REFERENCES Uzytkownik(id),
+  Rodzaje_dostawy_id INT NULL FOREIGN KEY REFERENCES  Rodzaje_dostawy(id),
+  Rodzaje_platnosci_id INTEGER  NOT NULL FOREIGN KEY REFERENCES  Rodzaje_platnosci(id),
+  Pracownik_id INTEGER NULL FOREIGN KEY REFERENCES Pracownik(id),
+  Sklep_stacjonarny_id INTEGER NULL FOREIGN KEY REFERENCES Sklep_stacjonarny(id),
+  data_zlozenia_zamowienia DATE NOT NULL,
+  oplacone BIT NOT NULL,
   data_zakonczenia_zamowienia DATE NULL,
-  PRIMARY KEY(id),
-  INDEX Zamowienie_FKIndex1(Rodzaje_platnosci_id),
-  INDEX Zamowienie_FKIndex4(Rodzaje_dostawy_id),
-  INDEX Zamowienie_FKIndex4(Uzytkownik_id),
-  INDEX Zamowienie_FKIndex4(Sklep_stacjonarny_id, Sklep_stacjonarny_Adres_id),
-  INDEX Zamowienie_FKIndex5(Pracownik_id),
-  FOREIGN KEY(Rodzaje_platnosci_id)
-    REFERENCES Rodzaje_platnosci(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Rodzaje_dostawy_id)
-    REFERENCES Rodzaje_dostawy(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Uzytkownik_id)
-    REFERENCES Uzytkownik(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Sklep_stacjonarny_id, Sklep_stacjonarny_Adres_id)
-    REFERENCES Sklep_stacjonarny(id, Adres_id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Pracownik_id)
-    REFERENCES Pracownik(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
+  CHECK (data_zakonczenia_zamowienia<=data_zakonczenia_zamowienia),
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE Faktura (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  Zamowienie_id INTEGER UNSIGNED NOT NULL,
-  data_wystawienia DATE NULL,
-  NIP VARCHAR(30) NULL,
-  netto FLOAT NULL,
-  podatek_VAT FLOAT NULL,
-  brutto FLOAT NULL,
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Zamowienie_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Zamowienie(id),
+  data_wystawienia DATE NOT NULL,
+  NIP VARCHAR(30) NOT NULL,
+  netto FLOAT NOT NULL,
+  CHECK (LEN(NIP)=13),
   PRIMARY KEY(id, Zamowienie_id),
-  INDEX Faktura_FKIndex1(Zamowienie_id),
-  FOREIGN KEY(Zamowienie_id)
-    REFERENCES Zamowienie(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
+);
+
+CREATE TABLE Konto_Premium (
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Uzytkownik_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Uzytkownik(id),
+  data_rozpoczecia DATE NOT NULL,
+  data_zakonczenia DATE NULL,
+  automatyczne_odnowienie BIT NOT NULL,
+  CHECK (data_zakonczenia<=data_zakonczenia),
+  PRIMARY KEY(id, Uzytkownik_id)
+);
+
+CREATE TABLE Ocena (
+  id INTEGER  NOT NULL IDENTITY(1,1) UNIQUE,
+  Uzytkownik_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Uzytkownik(id),
+  Produkt_id INTEGER  NOT NULL FOREIGN KEY REFERENCES  Produkt(id),
+  ocena INT NOT NULL,
+  data_wystawienia DATE NOT NULL,
+  komentarz TEXT NULL,
+  CHECK (ocena<=5 OR ocena>=0),
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE Koszyk (
-  Produkt_id INTEGER UNSIGNED NOT NULL,
-  Zamowienie_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(Produkt_id, Zamowienie_id),
-  INDEX Produkt_has_zamowienie_FKIndex1(Produkt_id),
-  INDEX Produkt_has_zamowienie_FKIndex2(Zamowienie_id),
-  FOREIGN KEY(Produkt_id)
-    REFERENCES Produkt(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(Zamowienie_id)
-    REFERENCES Zamowienie(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
+  id INTEGER NOT NULL IDENTITY(1,1) UNIQUE,
+  Produkt_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Produkt(id),
+  Zamowienie_id INTEGER  NOT NULL FOREIGN KEY REFERENCES Zamowienie(id),
+  ilosc INT NOT NULL DEFAULT 1,
+  CHECK (ilosc > 0),
+  PRIMARY KEY(id)
 );
-
-
